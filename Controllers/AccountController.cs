@@ -38,6 +38,18 @@ namespace UniBook.Controllers
             var isPasswordCorrect = await _userManager.CheckPasswordAsync(user, dto.Password!);
             if (!isPasswordCorrect) return NotFound();
 
+            if(dto.Password != dto.ConfirmPassword)
+            {
+                ModelState.AddModelError(nameof(LoginDto.ConfirmPassword), "Confirm password doesn't match. Type again!");
+
+                var validationErrors = ModelState
+                .SelectMany(modelState => modelState.Value!.Errors)
+                .Select(err => err.ErrorMessage)
+                .ToList();
+
+                return BadRequest(validationErrors);
+            }
+
             var roles = (await _userManager.GetRolesAsync(user)).ToList();
 
             var token = tokenService.GenerateToken(user.Name!, user.Surname!, user.UserName!, roles);
@@ -61,6 +73,18 @@ namespace UniBook.Controllers
                     Email = dto.Email,
                     UserName = dto.Email,
                 };
+
+                if (dto.Password != dto.ConfirmPassword)
+                {
+                    ModelState.AddModelError(nameof(LoginDto.ConfirmPassword), "Confirm password doesn't match. Type again!");
+
+                    var validationErrors = ModelState
+                    .SelectMany(modelState => modelState.Value!.Errors)
+                    .Select(err => err.ErrorMessage)
+                    .ToList();
+
+                    return BadRequest(validationErrors);
+                }
 
                 var result = await _userManager.CreateAsync(user, dto.Password!);
 
