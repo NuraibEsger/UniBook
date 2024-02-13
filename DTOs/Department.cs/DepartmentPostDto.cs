@@ -7,6 +7,5 @@ namespace UniBook.DTOs.Department.cs
     {
         [Required]
         public string? Name { get; set; }
-        public List<GroupPostDto>? Groups { get; set; }
     }
 }

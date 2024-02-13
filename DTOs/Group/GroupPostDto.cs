@@ -7,7 +7,5 @@ namespace UniBook.DTOs.Group
     {
         [Required]
         public string? Name { get; set; }
-        public List<StudentPostDto>? Students { get; set; }
-
     }
 }

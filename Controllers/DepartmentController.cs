@@ -68,6 +68,8 @@ namespace UniBook.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, DepartmentPutDto dto)
         {
+            if (!ModelState.IsValid) return BadRequest();
+
             var department = await _context.Departments.FirstOrDefaultAsync(x=>x.Id == id);
 
             if(department is null) return NotFound();

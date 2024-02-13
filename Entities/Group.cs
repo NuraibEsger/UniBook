@@ -8,5 +8,6 @@
         public Department? Department { get; set; }
         public List<Student>? Students { get; set; }
         public List<GroupTeacher>? GroupTeachers { get; set; }
+        public List<Course>? Courses { get; set; }
     }
 }

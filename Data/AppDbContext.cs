@@ -16,7 +16,6 @@ namespace UniBook.Data
         public DbSet<GroupTeacher> GroupTeachers { get; set; }
         public DbSet<Semester> Semesters { get; set; }
         public DbSet<Student> Students { get; set; }
-        public DbSet<StudentTeacher> StudentTeachers { get; set; }
         public DbSet<Subject> Subjects { get; set; }
     }
 }
