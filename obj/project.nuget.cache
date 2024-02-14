@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "tL7ZaL+y2snjuwKjixOosYGpqp/wBh/kg9TcE6SLV6meZGxZ5mTijWbl20sq/6jS4M7/heUL27ZUphn4PXA4QA==",
+  "dgSpecHash": "OKidXBtMeBzoi8Mi1abARsGd8c9lw6HVKKSeOvH2efVmO3sEedycGW8Y4eO/PL2gEwl7VFTNcokmeJwJJ9QQiA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\BAKU\\Desktop\\UNI\\UniBook\\UniBook.csproj",
+  "projectFilePath": "C:\\Users\\BAKU\\Desktop\\UniBook\\UniBook.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\BAKU\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\BAKU\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",

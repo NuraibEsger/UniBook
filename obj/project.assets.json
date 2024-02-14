@@ -3853,11 +3853,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\BAKU\\Desktop\\UNI\\UniBook\\UniBook.csproj",
+      "projectUniqueName": "C:\\Users\\BAKU\\Desktop\\UniBook\\UniBook.csproj",
       "projectName": "UniBook",
-      "projectPath": "C:\\Users\\BAKU\\Desktop\\UNI\\UniBook\\UniBook.csproj",
+      "projectPath": "C:\\Users\\BAKU\\Desktop\\UniBook\\UniBook.csproj",
       "packagesPath": "C:\\Users\\BAKU\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\BAKU\\Desktop\\UNI\\UniBook\\obj\\",
+      "outputPath": "C:\\Users\\BAKU\\Desktop\\UniBook\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\BAKU\\AppData\\Roaming\\NuGet\\NuGet.Config",
