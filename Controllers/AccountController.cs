@@ -32,7 +32,7 @@ namespace UniBook.Controllers
                 return BadRequest(messages);
             }
 
-            var user = await _userManager.FindByNameAsync(dto.Email!);
+            var user = await _userManager.FindByEmailAsync(dto.Email!);
             if (user is null) return NotFound();
 
             var isPasswordCorrect = await _userManager.CheckPasswordAsync(user, dto.Password!);
@@ -56,7 +56,7 @@ namespace UniBook.Controllers
 
             if (token is null) return NotFound();
 
-            return Ok(token);
+            return Ok(new {token, userName = user.UserName});
         }
 
         [HttpPost("Register")]
