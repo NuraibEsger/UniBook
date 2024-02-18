@@ -56,7 +56,7 @@ namespace UniBook.Controllers
 
             if (token is null) return NotFound();
 
-            return Ok(new {token, userName = user.UserName});
+            return Ok(token);
         }
 
         [HttpPost("Register")]

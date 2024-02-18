@@ -16,7 +16,9 @@ namespace UniBook.Data
             foreach ( var role in roles )
             {
                 var existingRole = await rolemanager.FindByNameAsync(role);
+
                 if (existingRole is not null) continue;
+
                 await rolemanager.CreateAsync(new IdentityRole(role));
             }
 

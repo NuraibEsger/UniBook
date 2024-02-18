@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using System.Text.RegularExpressions;
 using UniBook.DTOs.Group;
+using UniBook.Entities;
 
 namespace UniBook.AutoMapper
 {
@@ -9,6 +9,8 @@ namespace UniBook.AutoMapper
         public GroupProfile()
         {
             CreateMap<Group, GroupGetDto>().ReverseMap();
+            CreateMap<GroupPostDto, Group>().ReverseMap();
+            CreateMap<GroupPutDto, Group>().ReverseMap();
         }
     }
 }

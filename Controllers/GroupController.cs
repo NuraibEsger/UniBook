@@ -26,6 +26,7 @@ namespace UniBook.Controllers
         public async Task<IActionResult> Get()
         {
             var departmentDto = await _context.Groups
+                .Include(x => x.Department)
                 .Select(x => _mapper.Map(x, new GroupGetDto()))
                 .AsNoTracking()
                 .ToListAsync();
@@ -37,7 +38,7 @@ namespace UniBook.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var group = await _context.Groups.FirstOrDefaultAsync(x => x.Id == id);
+            var group = await _context.Groups.Include(x=>x.Department).FirstOrDefaultAsync(x => x.Id == id);
 
             if (group is null) return NotFound();
 
@@ -54,6 +55,10 @@ namespace UniBook.Controllers
         {
             if (!ModelState.IsValid) return BadRequest();
 
+            var department = await _context.Departments.FirstOrDefaultAsync(x => x.Id == dto.DepartmentId);
+
+            if (department is null) return NotFound();
+
             var group = new Group();
 
             _mapper.Map(dto,group);
@@ -68,12 +73,21 @@ namespace UniBook.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, GroupPutDto dto)
         {
+
             if (!ModelState.IsValid) return BadRequest();
             
-            var group = await _context.Groups.FirstOrDefaultAsync(x=>x.Id == id);
+            var group = await _context.Groups.Include(x=>x.Department).FirstOrDefaultAsync(x=>x.Id == id);
             if (group is null) return NotFound();
 
+            if (group.DepartmentId != dto.DepartmentId)
+            {
+                var department = await _context.Departments.FirstOrDefaultAsync(x=>x.Id == dto.DepartmentId);
+                if (department is null) return NotFound();
+            }
+
             _mapper.Map(dto,group);
+
+            await _context.SaveChangesAsync();
 
             return Ok(group.Id);
         }
