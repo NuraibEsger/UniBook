@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\User\\Desktop\\Projects\\UniBook\\UniBook.csproj": {}
+    "C:\\Users\\User\\Desktop\\UniBook\\UniBook.csproj": {}
   },
   "projects": {
-    "C:\\Users\\User\\Desktop\\Projects\\UniBook\\UniBook.csproj": {
+    "C:\\Users\\User\\Desktop\\UniBook\\UniBook.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\User\\Desktop\\Projects\\UniBook\\UniBook.csproj",
+        "projectUniqueName": "C:\\Users\\User\\Desktop\\UniBook\\UniBook.csproj",
         "projectName": "UniBook",
-        "projectPath": "C:\\Users\\User\\Desktop\\Projects\\UniBook\\UniBook.csproj",
+        "projectPath": "C:\\Users\\User\\Desktop\\UniBook\\UniBook.csproj",
         "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\User\\Desktop\\Projects\\UniBook\\obj\\",
+        "outputPath": "C:\\Users\\User\\Desktop\\UniBook\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",

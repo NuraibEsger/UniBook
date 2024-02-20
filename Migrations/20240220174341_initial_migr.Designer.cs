@@ -12,8 +12,8 @@ using UniBook.Data;
 namespace UniBook.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240213133752_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240220174341_initial_migr")]
+    partial class initial_migr
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -287,29 +287,6 @@ namespace UniBook.Migrations
                     b.ToTable("Groups");
                 });
 
-            modelBuilder.Entity("UniBook.Entities.GroupTeacher", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("GroupId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TeacherId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
-
-                    b.HasIndex("TeacherId");
-
-                    b.ToTable("GroupTeachers");
-                });
-
             modelBuilder.Entity("UniBook.Entities.Semester", b =>
                 {
                     b.Property<int>("Id")
@@ -331,30 +308,6 @@ namespace UniBook.Migrations
                     b.ToTable("Semesters");
                 });
 
-            modelBuilder.Entity("UniBook.Entities.Student", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("GroupId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Surname")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
-
-                    b.ToTable("Students");
-                });
-
             modelBuilder.Entity("UniBook.Entities.Subject", b =>
                 {
                     b.Property<int>("Id")
@@ -374,7 +327,7 @@ namespace UniBook.Migrations
                     b.ToTable("Subjects");
                 });
 
-            modelBuilder.Entity("UniBook.Entities.Teacher", b =>
+            modelBuilder.Entity("UniBook.Entities.UserGroup", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -382,20 +335,19 @@ namespace UniBook.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SubjectId")
+                    b.Property<int>("GroupId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Surname")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SubjectId");
+                    b.HasIndex("GroupId");
 
-                    b.ToTable("Teachers");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserGroups");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -471,25 +423,6 @@ namespace UniBook.Migrations
                     b.Navigation("Department");
                 });
 
-            modelBuilder.Entity("UniBook.Entities.GroupTeacher", b =>
-                {
-                    b.HasOne("UniBook.Entities.Group", "Group")
-                        .WithMany("GroupTeachers")
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("UniBook.Entities.Teacher", "Teacher")
-                        .WithMany("GroupTeachers")
-                        .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Group");
-
-                    b.Navigation("Teacher");
-                });
-
             modelBuilder.Entity("UniBook.Entities.Semester", b =>
                 {
                     b.HasOne("UniBook.Entities.Course", "Course")
@@ -501,26 +434,26 @@ namespace UniBook.Migrations
                     b.Navigation("Course");
                 });
 
-            modelBuilder.Entity("UniBook.Entities.Student", b =>
+            modelBuilder.Entity("UniBook.Entities.UserGroup", b =>
                 {
                     b.HasOne("UniBook.Entities.Group", "Group")
-                        .WithMany("Students")
+                        .WithMany("UserGroups")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("UniBook.Entities.AppUser", "User")
+                        .WithMany("UserGroups")
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Group");
+
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("UniBook.Entities.Teacher", b =>
+            modelBuilder.Entity("UniBook.Entities.AppUser", b =>
                 {
-                    b.HasOne("UniBook.Entities.Subject", "Subject")
-                        .WithMany("Teachers")
-                        .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Subject");
+                    b.Navigation("UserGroups");
                 });
 
             modelBuilder.Entity("UniBook.Entities.Course", b =>
@@ -537,19 +470,7 @@ namespace UniBook.Migrations
                 {
                     b.Navigation("Courses");
 
-                    b.Navigation("GroupTeachers");
-
-                    b.Navigation("Students");
-                });
-
-            modelBuilder.Entity("UniBook.Entities.Subject", b =>
-                {
-                    b.Navigation("Teachers");
-                });
-
-            modelBuilder.Entity("UniBook.Entities.Teacher", b =>
-                {
-                    b.Navigation("GroupTeachers");
+                    b.Navigation("UserGroups");
                 });
 #pragma warning restore 612, 618
         }

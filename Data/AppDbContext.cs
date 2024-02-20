@@ -11,11 +11,9 @@ namespace UniBook.Data
 
         public DbSet<Department> Departments { get; set; }
         public DbSet<Group> Groups { get; set; }
-        public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Course> Courses { get; set; }
-        public DbSet<GroupTeacher> GroupTeachers { get; set; }
         public DbSet<Semester> Semesters { get; set; }
-        public DbSet<Student> Students { get; set; }
         public DbSet<Subject> Subjects { get; set; }
+        public DbSet<UserGroup> UserGroups { get; set; }
     }
 }

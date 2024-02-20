@@ -38,6 +38,10 @@ namespace UniBook.Data
                 UserName = adminUserName,
             };
 
+            var token = await userManager.GenerateEmailConfirmationTokenAsync(rector);
+
+            await userManager.ConfirmEmailAsync(rector, token);
+
             var result = await userManager.CreateAsync(rector, adminPassword);
 
             if(result.Succeeded)
