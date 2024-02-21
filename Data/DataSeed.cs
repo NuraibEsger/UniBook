@@ -9,7 +9,7 @@ namespace UniBook.Data
         {
             using var scope = serviceProvider.CreateScope();
 
-            var roles = new string[] { "Rector", "Teacher" };
+            var roles = new string[] { "Rector", "Teacher", "Student" };
 
             var rolemanager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
