@@ -26,7 +26,6 @@ namespace UniBook.Controllers
         public async Task<IActionResult> Get()
         {
             var departmentDto = await _context.Departments
-                .Include(x=>x.Groups)
                 .Select(x=>_mapper.Map(x, new DepartmentGetDto()))
                 .AsNoTracking()
                 .ToListAsync();
@@ -38,7 +37,7 @@ namespace UniBook.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var department = await _context.Departments.Include(x=>x.Groups).FirstOrDefaultAsync(x=>x.Id == id);
+            var department = await _context.Departments.FirstOrDefaultAsync(x=>x.Id == id);
 
             if(department is null) return NotFound();
 
@@ -76,6 +75,8 @@ namespace UniBook.Controllers
             if(department is null) return NotFound();
 
             _mapper.Map(dto, department);
+
+            await _context.SaveChangesAsync();
 
             return Ok(department.Id);
         }

@@ -38,7 +38,9 @@ namespace UniBook.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var group = await _context.Groups.Include(x=>x.Department).FirstOrDefaultAsync(x => x.Id == id);
+            var group = await _context.Groups
+                .Include(x=>x.Department)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             if (group is null) return NotFound();
 
