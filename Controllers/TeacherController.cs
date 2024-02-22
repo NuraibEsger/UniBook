@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using UniBook.DTOs.Student;
+using UniBook.DTOs.Teacher;
 using UniBook.Entities;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -20,41 +21,41 @@ namespace UniBook.Controllers
             _userManager = userManager;
             _mapper = mapper;
         }
-        // GET: api/<StudentController>
+        // GET: api/<TeacherController>
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var students = await _userManager.GetUsersInRoleAsync("Teacher");
+            var teachers = await _userManager.GetUsersInRoleAsync("Teacher");
 
-            var studentDtos = students.Select(x => _mapper.Map(x, new UserGetDto()));
+            var teacherDtos = teachers.Select(x => _mapper.Map(x, new UserGetDto()));
 
-            return Ok(studentDtos);
+            return Ok(teacherDtos);
         }
 
-        // GET api/<StudentController>/id
+        // GET api/<teacherController>/id
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id)
         {
-            var studentInRole = await _userManager.GetUsersInRoleAsync("Teacher");
+            var teacherInRole = await _userManager.GetUsersInRoleAsync("Teacher");
 
-            if (studentInRole is null) return NotFound();
+            if (teacherInRole is null) return NotFound();
 
-            var student = studentInRole.FirstOrDefault(x => x.Id == id);
+            var teacher = teacherInRole.FirstOrDefault(x => x.Id == id);
 
             var dto = new UserGetDto();
 
-            _mapper.Map(student, dto);
+            _mapper.Map(teacher, dto);
 
             return Ok(dto);
         }
 
-        // POST api/<StudentController>
+        // POST api/<TeacherController>
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] string id)
         {
             var userToAdd = await _userManager.FindByIdAsync(id);
 
-            string[] roles = { "Student", "Teacher", "Rector" };
+            string[] roles = { "teacher", "Teacher", "Rector" };
 
             foreach (var role in roles)
             {
@@ -70,7 +71,7 @@ namespace UniBook.Controllers
             return Ok(new {userToAdd.Name, userToAdd.Surname});
         }
 
-        // DELETE api/<StudentController>/5
+        // DELETE api/<TeacherController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {

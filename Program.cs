@@ -105,13 +105,20 @@ namespace UniBook
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy(name: "AllowSpecificOrigin",
+                options.AddPolicy("AllowSpecificOrigin",
                     builder =>
                     {
                         builder.WithOrigins("http://localhost:5173")
                             .AllowAnyHeader()
                             .AllowAnyMethod();
                     });
+
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
             });
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
