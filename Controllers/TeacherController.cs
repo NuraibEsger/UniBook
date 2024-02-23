@@ -55,6 +55,8 @@ namespace UniBook.Controllers
         {
             var userToAdd = await _userManager.FindByIdAsync(id);
 
+            await _userManager.RemoveFromRoleAsync(userToAdd!, "User");
+
             string[] roles = { "teacher", "Teacher", "Rector" };
 
             foreach (var role in roles)
@@ -80,6 +82,8 @@ namespace UniBook.Controllers
             if (userToDelete is null) return NotFound();
 
             await _userManager.RemoveFromRoleAsync(userToDelete, "Teacher");
+
+            await _userManager.AddToRoleAsync(userToDelete, "User");
 
             return Ok(new { userToDelete.Name, userToDelete.Surname });
         }

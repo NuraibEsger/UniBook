@@ -28,7 +28,7 @@ namespace UniBook.Services.Concrete
 
             claims.AddRange(roles.Select(x => new Claim(ClaimTypes.Role, x)));
 
-            var token = new JwtSecurityToken(expires: DateTime.Now.AddMinutes(10),
+            var token = new JwtSecurityToken(expires: DateTime.Now.AddDays(1),
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256), claims: claims);
 
             return new JwtSecurityTokenHandler().WriteToken(token);

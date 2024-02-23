@@ -60,7 +60,7 @@ namespace UniBook.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDto dto, [FromServices] ISendEmailService sendEmail, [FromServices] IUrlHelperFactory urlHelperFactory)
+        public async Task<IActionResult> Register([FromBody] RegisterDto dto, [FromServices] ISendEmailService sendEmail)
         {
             if(ModelState.IsValid)
             {
@@ -73,6 +73,7 @@ namespace UniBook.Controllers
                     Email = dto.Email,
                     UserName = dto.Email,
                 };
+
 
                 if (dto.Password != dto.ConfirmPassword)
                 {
@@ -89,6 +90,8 @@ namespace UniBook.Controllers
                 var result = await _userManager.CreateAsync(user, dto.Password!);
 
                 if (!result.Succeeded) return BadRequest();
+
+                await _userManager.AddToRoleAsync(user, "User");
 
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
