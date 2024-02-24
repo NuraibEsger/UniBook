@@ -203,6 +203,9 @@ namespace UniBook.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("SubjectId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Surname")
                         .HasColumnType("nvarchar(max)");
 
@@ -222,6 +225,8 @@ namespace UniBook.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("SubjectId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -398,6 +403,15 @@ namespace UniBook.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("UniBook.Entities.AppUser", b =>
+                {
+                    b.HasOne("UniBook.Entities.Subject", "Subjects")
+                        .WithMany("Users")
+                        .HasForeignKey("SubjectId");
+
+                    b.Navigation("Subjects");
+                });
+
             modelBuilder.Entity("UniBook.Entities.Course", b =>
                 {
                     b.HasOne("UniBook.Entities.Group", "Group")
@@ -468,6 +482,11 @@ namespace UniBook.Migrations
                     b.Navigation("Courses");
 
                     b.Navigation("UserGroups");
+                });
+
+            modelBuilder.Entity("UniBook.Entities.Subject", b =>
+                {
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

@@ -6,8 +6,6 @@ namespace UniBook.DTOs.Teacher
     public class TeacherPutDto
     {
         [Required]
-        public string? Name { get; set; }
-        [Required]
-        public string? Surname { get; set; }
+        public int SubjectId { get; set; }
     }
 }

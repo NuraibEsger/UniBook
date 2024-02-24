@@ -7,5 +7,7 @@ namespace UniBook.Entities
         public string? Name { get; set; }
         public string? Surname { get; set; }
         public List<UserGroup>? UserGroups { get; set; }
+        public int? SubjectId { get; set; }
+        public Subject? Subject { get; set; }
     }
 }

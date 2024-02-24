@@ -1,11 +1,16 @@
-﻿using UniBook.DTOs.Subject;
+﻿using System.ComponentModel.DataAnnotations;
+using UniBook.DTOs.Subject;
+using UniBook.Entities;
 
 namespace UniBook.DTOs.Teacher
 {
     public class TeacherGetDto
     {
+        public string? Id { get; set; }
         public string? Name { get; set; }
         public string? Surname { get; set; }
-        public SubjectGetDto? Subject { get; set; }
+        [DataType(DataType.EmailAddress, ErrorMessage = "Email is wrong.")]
+        public string? Email { get; set; }
+        public string? SubjectName { get; set; }
     }
 }

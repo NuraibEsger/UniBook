@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using UniBook.DTOs.Student;
+using UniBook.DTOs.Teacher;
 using UniBook.Entities;
 
 namespace UniBook.AutoMapper
@@ -9,6 +10,7 @@ namespace UniBook.AutoMapper
         public StudentProfile()
         {
             CreateMap<AppUser, UserGetDto>().ReverseMap();
+            
         }
     }
 }

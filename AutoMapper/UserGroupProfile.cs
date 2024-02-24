@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using UniBook.DTOs.Student;
+using UniBook.DTOs.Teacher;
 using UniBook.DTOs.UserGroup;
 using UniBook.Entities;
 

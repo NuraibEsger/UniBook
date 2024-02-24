@@ -1,6 +1,10 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SendGrid.Helpers.Mail;
+using UniBook.Data;
 using UniBook.DTOs.Student;
 using UniBook.DTOs.Teacher;
 using UniBook.Entities;
@@ -23,11 +27,16 @@ namespace UniBook.Controllers
         }
         // GET: api/<TeacherController>
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromServices] AppDbContext context)
         {
             var teachers = await _userManager.GetUsersInRoleAsync("Teacher");
 
-            var teacherDtos = teachers.Select(x => _mapper.Map(x, new UserGetDto()));
+            foreach (var teacher in teachers)
+            {
+                await context.Entry(teacher).Reference(x => x.Subject).LoadAsync();
+            }
+
+            var teacherDtos = teachers.Select(x => _mapper.Map(x, new TeacherGetDto()));
 
             return Ok(teacherDtos);
         }
@@ -71,6 +80,31 @@ namespace UniBook.Controllers
             await _userManager.AddToRoleAsync(userToAdd, "Teacher");
 
             return Ok(new {userToAdd.Name, userToAdd.Surname});
+        }
+
+        //Put api/<TeacherContoller>
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(string id, [FromBody] TeacherPutDto dto, [FromServices] AppDbContext context)
+        {
+            var teacher  = await context.Users.Include(x=>x.Subject).FirstOrDefaultAsync(x=>x.Id == id);
+
+            if (teacher is null) return NotFound();
+
+            var isTeacher = await _userManager.IsInRoleAsync(teacher!, "Teacher");
+
+            if (!isTeacher) return BadRequest();
+            
+            if(teacher.SubjectId != dto.SubjectId)
+            {
+                var subject =  await context.Subjects.FirstOrDefaultAsync(x=>x.Id == dto.SubjectId);
+                if (subject is null) return NotFound();
+            }
+            _mapper.Map(dto, teacher);
+
+            await context.SaveChangesAsync();
+            
+            return Ok(teacher.Id);
         }
 
         // DELETE api/<TeacherController>/5
