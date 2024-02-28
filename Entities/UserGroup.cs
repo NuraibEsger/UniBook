@@ -7,6 +7,5 @@
         public int GroupId { get; set; }
         public AppUser? User { get; set; }
         public Group? Group { get; set; }
-
     }
 }

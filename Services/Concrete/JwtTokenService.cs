@@ -15,7 +15,7 @@ namespace UniBook.Services.Concrete
             _configuration = configuration;
         }
 
-        public string GenerateToken(string name, string surname, string userName, List<string> roles)
+        public string GenerateToken(string name, string surname, string userName, List<string> roles, string Id)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]!));
 
@@ -23,7 +23,8 @@ namespace UniBook.Services.Concrete
             {
                 new Claim("UserName", userName),
                 new Claim("Name", name),
-                new Claim("Surname", surname)
+                new Claim("Surname", surname),
+                new Claim("Id", Id)
             };
 
             claims.AddRange(roles.Select(x => new Claim(ClaimTypes.Role, x)));

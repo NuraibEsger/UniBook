@@ -52,7 +52,7 @@ namespace UniBook.Controllers
 
             var roles = (await _userManager.GetRolesAsync(user)).ToList();
 
-            var token = tokenService.GenerateToken(user.Name!, user.Surname!, user.UserName!, roles);
+            var token = tokenService.GenerateToken(user.Name!, user.Surname!, user.UserName!, roles, user.Id);
 
             if (token is null) return NotFound();
 
@@ -95,7 +95,7 @@ namespace UniBook.Controllers
 
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-                var confirmationLink = Url.Action("ConfirmEmail", "Account", new { token, email = dto.Email }, Request.Scheme);
+                var confirmationLink = $"http://localhost:5173/EmailConfirmation?token={token}&email={dto.Email}";
 
                 bool IsSendEmail = await sendEmail.EmailSend(dto.Email!, confirmationLink!);
 
@@ -107,7 +107,7 @@ namespace UniBook.Controllers
             }
             return BadRequest();
         }
-        [HttpGet("ConfirmEmail")]
+        [HttpPost("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail(string token, string email)
         {
             var user = await _userManager.FindByEmailAsync(email);

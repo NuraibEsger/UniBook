@@ -78,13 +78,21 @@ namespace UniBook.Controllers
 
         // DELETE api/<StudentController>/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(string id, [FromServices] AppDbContext context)
         {
             var userToDelete = await _userManager.FindByIdAsync(id);
 
             if (userToDelete is null) return NotFound();
 
             await _userManager.RemoveFromRoleAsync(userToDelete, "Student");
+
+            var existingUserGroup = await context.UserGroups.FirstOrDefaultAsync(x => x.UserId == id);
+
+            if (existingUserGroup is not null)
+            {
+                context.UserGroups.Remove(existingUserGroup);
+                context.SaveChanges();
+            }
 
             await _userManager.AddToRoleAsync(userToDelete, "User");
 

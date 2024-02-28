@@ -26,13 +26,15 @@ namespace UniBook.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var departmentDto = await _context.Groups
+            var groupDto = await _context.Groups
                 .Include(x => x.Department)
+                .Include(x=>x.UserGroups!)
+                .ThenInclude(x=>x.User)
                 .Select(x => _mapper.Map(x, new GroupGetDto()))
                 .AsNoTracking()
                 .ToListAsync();
 
-            return Ok(departmentDto);
+            return Ok(groupDto);
         }
 
         // GET api/<GroupController>/5
@@ -41,6 +43,8 @@ namespace UniBook.Controllers
         {
             var group = await _context.Groups
                 .Include(x=>x.Department)
+                .Include(x=>x.UserGroups!)
+                .ThenInclude(x => x.User)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (group is null) return NotFound();

@@ -70,9 +70,14 @@ namespace UniBook.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var subject = await _context.Subjects.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            var subject = await _context.Subjects.Include(x=>x.Users).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
 
             if (subject is null) return NotFound();
+
+            foreach(var teacher in subject.Users!)
+            {
+                teacher.SubjectId = id;
+            }
 
             _context.Subjects.Remove(subject);
 

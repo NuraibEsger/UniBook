@@ -39,20 +39,18 @@ namespace UniBook.Controllers
 
         // GET api/<UserGroupController>/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(string id)
         {
             var userGroup = await _context.UserGroups
-                .Include(x=>x.Group)
-                .Include(x=>x.User)
-                .FirstOrDefaultAsync(x=>x.Id == id);
+                .Include(x => x.Group)
+                .Include(x => x.User)
+                .Where(x => x.UserId == id)
+                .Select(x => _mapper.Map(x,new UserGroupGetDto()))
+                .ToListAsync();
 
             if (userGroup is null) return NotFound();
 
-            var userGroupDto = new UserGroupGetDto();
-
-            _mapper.Map(userGroup, userGroupDto);
-
-            return Ok(userGroupDto);
+            return Ok(userGroup);
         }
 
         // POST api/<UserGroupController>
@@ -65,14 +63,20 @@ namespace UniBook.Controllers
             if (user == null)
                 return BadRequest("User not found.");
 
+            var existingUserGroup = await _context.UserGroups.FirstOrDefaultAsync(x => x.UserId == dto.UserId);
+            if (existingUserGroup != null)
+                return BadRequest("The user already belongs to a group.");
+
+
             var isStudent = await _userManager.IsInRoleAsync(user, "Student");
 
             var isTeacher = await _userManager.IsInRoleAsync(user, "Teacher");
 
+
             if(isStudent)
             {
-                var existingUserGroup = await _context.UserGroups.FirstOrDefaultAsync(x=>x.UserId ==  dto.UserId);
-                if (existingUserGroup != null) 
+                var existingStudent = await _context.UserGroups.FirstOrDefaultAsync(x=>x.UserId ==  dto.UserId);
+                if (existingStudent != null) 
                     return BadRequest("The student already belongs to a group.");
             }
 
