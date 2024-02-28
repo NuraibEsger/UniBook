@@ -1,4 +1,6 @@
-﻿namespace UniBook.DTOs.UserGroup
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace UniBook.DTOs.UserGroup
 {
     public class UserGroupGetDto
     {

@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UniBook.Data;
 using UniBook.DTOs.Department.cs;
 using UniBook.DTOs.Group;
+using UniBook.DTOs.UserGroup;
 using UniBook.Entities;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -39,8 +41,12 @@ namespace UniBook.Controllers
 
         // GET api/<GroupController>/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(int id, [FromServices] UserManager<AppUser> userManager)
         {
+            var students = await userManager.GetUsersInRoleAsync("Student");
+
+            var studentIds = students.Select(s => s.Id).ToList();
+
             var group = await _context.Groups
                 .Include(x=>x.Department)
                 .Include(x=>x.UserGroups!)
@@ -49,9 +55,13 @@ namespace UniBook.Controllers
 
             if (group is null) return NotFound();
 
+            var studentGroups = group.UserGroups!.Where(ug => studentIds.Contains(ug.UserId!)).ToList();
+
             var dto = new GroupGetDto();
 
             _mapper.Map(group,dto);
+
+            dto.UserGroups = _mapper.Map<List<UserGroupGetDto>>(studentGroups);
 
             return Ok(dto);
         }
