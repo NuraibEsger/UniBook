@@ -26,9 +26,14 @@ namespace UniBook.Controllers
         }
         // GET: api/<StudentController>
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromServices] AppDbContext context)
         {
             var students = await _userManager.GetUsersInRoleAsync("Student");
+
+            foreach (var student in students)
+            {
+                await context.Entry(student).Collection(x =>x.UserGroups!).LoadAsync();
+            }
 
             var studentDtos = students.Select(x => _mapper.Map(x, new UserGetDto()));
 

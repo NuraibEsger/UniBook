@@ -10,7 +10,6 @@ namespace UniBook.AutoMapper
         public StudentProfile()
         {
             CreateMap<AppUser, UserGetDto>().ReverseMap();
-            
         }
     }
 }
