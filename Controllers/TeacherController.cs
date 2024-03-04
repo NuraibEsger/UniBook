@@ -34,6 +34,7 @@ namespace UniBook.Controllers
             foreach (var teacher in teachers)
             {
                 await context.Entry(teacher).Reference(x => x.Subject).LoadAsync();
+                await context.Entry(teacher).Collection(x=>x.UserGroups!).LoadAsync();
             }
 
             var teacherDtos = teachers.Select(x => _mapper.Map(x, new TeacherGetDto()));
@@ -109,11 +110,22 @@ namespace UniBook.Controllers
 
         // DELETE api/<TeacherController>/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(string id, [FromServices] AppDbContext context)
         {
             var userToDelete = await _userManager.FindByIdAsync(id);
 
             if (userToDelete is null) return NotFound();
+
+            var existingUserGroup = await context.UserGroups.Where(x => x.UserId == id).ToListAsync();
+
+            if (existingUserGroup is not null)
+            {
+                foreach (var group in existingUserGroup)
+                {
+                    context.UserGroups.Remove(group);
+                    context.SaveChanges();
+                }
+            }
 
             await _userManager.RemoveFromRoleAsync(userToDelete, "Teacher");
 

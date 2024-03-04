@@ -63,21 +63,24 @@ namespace UniBook.Controllers
             if (user == null)
                 return BadRequest("User not found.");
 
-            var existingUserGroup = await _context.UserGroups.FirstOrDefaultAsync(x => x.UserId == dto.UserId);
-            if (existingUserGroup != null)
-                return BadRequest("The user already belongs to a group.");
-
-
             var isStudent = await _userManager.IsInRoleAsync(user, "Student");
 
             var isTeacher = await _userManager.IsInRoleAsync(user, "Teacher");
-
 
             if(isStudent)
             {
                 var existingStudent = await _context.UserGroups.FirstOrDefaultAsync(x=>x.UserId ==  dto.UserId);
                 if (existingStudent != null) 
                     return BadRequest("The student already belongs to a group.");
+            }
+
+            if (isTeacher)
+            {
+                var existingUserGroup = await _context.UserGroups.FirstOrDefaultAsync(x => x.UserId == dto.UserId && x.GroupId == dto.GroupId);
+                if (existingUserGroup != null)
+                {
+                    return BadRequest("The teacher is already assigned to this group.");
+                }
             }
 
             var userGroup = new UserGroup();

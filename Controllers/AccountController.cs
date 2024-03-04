@@ -108,19 +108,19 @@ namespace UniBook.Controllers
             return BadRequest();
         }
         [HttpPost("ConfirmEmail")]
-        public async Task<IActionResult> ConfirmEmail(string token, string email)
+        public async Task<IActionResult> ConfirmEmail([FromBody] EmailConfirmation request)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByEmailAsync(request.Email);
 
             if (user == null)
                 return BadRequest("Email not found");
 
-            var result = await _userManager.ConfirmEmailAsync(user, token);
+            var result = await _userManager.ConfirmEmailAsync(user, request.Token);
 
             if (result.Succeeded)
                 return Ok("Email confirmed successfully");
             else
-                return BadRequest($"Failed to confirm email: {email}");
+                return BadRequest(request.Token);
         }
     }
 }
