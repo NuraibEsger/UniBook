@@ -115,6 +115,8 @@ namespace UniBook.Controllers
             if (user == null)
                 return BadRequest("Email not found");
 
+            if (user.EmailConfirmed == true) return BadRequest();
+
             var result = await _userManager.ConfirmEmailAsync(user, request.Token);
 
             if (result.Succeeded)

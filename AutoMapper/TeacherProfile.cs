@@ -10,6 +10,7 @@ namespace UniBook.AutoMapper
         {
             CreateMap<AppUser, TeacherGetDto>().ReverseMap();
             CreateMap<TeacherPutDto, AppUser>().ReverseMap();
+            CreateMap<AppUser, TeacherSubjectPostDto>().ReverseMap();
         }
     }
 }

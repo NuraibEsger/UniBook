@@ -83,6 +83,25 @@ namespace UniBook.Controllers
             return Ok(new {userToAdd.Name, userToAdd.Surname});
         }
 
+        [HttpPost("{id}")]
+        public async Task<IActionResult> Post(string id, [FromBody] TeacherSubjectPostDto dto, [FromServices] AppDbContext context)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+
+            var teacher = await context.Users.Include(u => u.Subject).FirstOrDefaultAsync(u => u.Id == id);
+
+            if (teacher is null) return NotFound("Teacher not found.");
+
+            var subject = await context.Subjects.FirstOrDefaultAsync(x => x.Id == dto.SubjectId);
+
+            if (subject is null) return NotFound("Subject not found");
+
+            teacher.Subject = subject;
+            await context.SaveChangesAsync();
+
+            return Ok($"Subject '{subject.Name}' added to teacher '{teacher.Name} {teacher.Surname}' successfully.");
+        }
+
         //Put api/<TeacherContoller>
 
         [HttpPut("{id}")]
@@ -118,12 +137,23 @@ namespace UniBook.Controllers
 
             var existingUserGroup = await context.UserGroups.Where(x => x.UserId == id).ToListAsync();
 
+            var teacherToDelete = await context.Users.Include(u => u.Subject).FirstOrDefaultAsync(u => u.Id == id);
+
+            if (teacherToDelete is null) return NotFound();
+
+            if (teacherToDelete.Subject != null)
+            {
+                teacherToDelete.Subject = null;
+            }
+
+            await context.SaveChangesAsync();
+
             if (existingUserGroup is not null)
             {
                 foreach (var group in existingUserGroup)
                 {
                     context.UserGroups.Remove(group);
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
                 }
             }
 
