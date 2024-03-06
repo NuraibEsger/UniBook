@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using UniBook.DTOs.Course;
 using UniBook.DTOs.Student;
 
 namespace UniBook.DTOs.Group

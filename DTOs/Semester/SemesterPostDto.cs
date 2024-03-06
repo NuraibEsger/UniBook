@@ -2,5 +2,6 @@
 {
     public class SemesterPostDto
     {
+        public string? SemesterName { get; set; }
     }
 }

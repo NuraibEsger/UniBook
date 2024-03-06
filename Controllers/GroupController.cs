@@ -30,6 +30,8 @@ namespace UniBook.Controllers
         {
             var groupDto = await _context.Groups
                 .Include(x => x.Department)
+                .Include(x => x.Courses!)
+                .ThenInclude(x=>x.Semesters)
                 .Include(x=>x.UserGroups!)
                 .ThenInclude(x=>x.User)
                 .Select(x => _mapper.Map(x, new GroupGetDto()))
@@ -81,6 +83,34 @@ namespace UniBook.Controllers
             _mapper.Map(dto,group);
 
             await _context.Groups.AddAsync(group);
+
+            for (int i = 0; i < 4; i++)
+            {
+                var course = new Course
+                {
+                    Number = i + 1, // Assuming course numbers start from 1
+                    GroupId = group.Id,
+                    Group = group,
+                    Semesters = new List<Semester>()
+                };
+
+                // Create two semesters for each course
+                for (int j = 0; j < 2; j++)
+                {
+                    var semester = new Semester
+                    {
+                        SemesterName = j == 0 ? "Autumn" : "Spring",
+                        Course = course,
+                        CourseId = course.Id
+                    };
+
+                    _context.Semesters.Add(semester);
+                    course.Semesters.Add(semester);
+                }
+
+                _context.Courses.Add(course);
+            }
+
             await _context.SaveChangesAsync();
 
             return Ok(group.Id);
