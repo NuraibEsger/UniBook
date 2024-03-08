@@ -231,27 +231,6 @@ namespace UniBook.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("UniBook.Entities.Course", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("GroupId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Number")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
-
-                    b.ToTable("Courses");
-                });
-
             modelBuilder.Entity("UniBook.Entities.Department", b =>
                 {
                     b.Property<int>("Id")
@@ -287,27 +266,6 @@ namespace UniBook.Migrations
                     b.HasIndex("DepartmentId");
 
                     b.ToTable("Groups");
-                });
-
-            modelBuilder.Entity("UniBook.Entities.Semester", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CourseId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SemesterName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CourseId");
-
-                    b.ToTable("Semesters");
                 });
 
             modelBuilder.Entity("UniBook.Entities.Subject", b =>
@@ -405,22 +363,11 @@ namespace UniBook.Migrations
 
             modelBuilder.Entity("UniBook.Entities.AppUser", b =>
                 {
-                    b.HasOne("UniBook.Entities.Subject", "Subjects")
+                    b.HasOne("UniBook.Entities.Subject", "Subject")
                         .WithMany("Users")
                         .HasForeignKey("SubjectId");
 
-                    b.Navigation("Subjects");
-                });
-
-            modelBuilder.Entity("UniBook.Entities.Course", b =>
-                {
-                    b.HasOne("UniBook.Entities.Group", "Group")
-                        .WithMany("Courses")
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Group");
+                    b.Navigation("Subject");
                 });
 
             modelBuilder.Entity("UniBook.Entities.Group", b =>
@@ -432,17 +379,6 @@ namespace UniBook.Migrations
                         .IsRequired();
 
                     b.Navigation("Department");
-                });
-
-            modelBuilder.Entity("UniBook.Entities.Semester", b =>
-                {
-                    b.HasOne("UniBook.Entities.Course", "Course")
-                        .WithMany("Semesters")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
                 });
 
             modelBuilder.Entity("UniBook.Entities.UserGroup", b =>
@@ -467,11 +403,6 @@ namespace UniBook.Migrations
                     b.Navigation("UserGroups");
                 });
 
-            modelBuilder.Entity("UniBook.Entities.Course", b =>
-                {
-                    b.Navigation("Semesters");
-                });
-
             modelBuilder.Entity("UniBook.Entities.Department", b =>
                 {
                     b.Navigation("Groups");
@@ -479,8 +410,6 @@ namespace UniBook.Migrations
 
             modelBuilder.Entity("UniBook.Entities.Group", b =>
                 {
-                    b.Navigation("Courses");
-
                     b.Navigation("UserGroups");
                 });
 

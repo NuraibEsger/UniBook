@@ -1,5 +1,4 @@
-﻿using UniBook.DTOs.Course;
-using UniBook.DTOs.Student;
+﻿using UniBook.DTOs.Student;
 using UniBook.DTOs.UserGroup;
 using UniBook.Entities;
 
@@ -11,6 +10,5 @@ namespace UniBook.DTOs.Group
         public string? Name { get; set; }
         public string? DepartmentName { get; set; }
         public List<UserGroupGetDto>? UserGroups { get; set; }
-        public List<CourseGetDto>? Courses { get; set; }
     }
 }
