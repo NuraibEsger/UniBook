@@ -247,6 +247,32 @@ namespace UniBook.Migrations
                     b.ToTable("Departments");
                 });
 
+            modelBuilder.Entity("UniBook.Entities.Exam", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubjectId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("SubjectId");
+
+                    b.ToTable("Exams");
+                });
+
             modelBuilder.Entity("UniBook.Entities.Group", b =>
                 {
                     b.Property<int>("Id")
@@ -370,6 +396,25 @@ namespace UniBook.Migrations
                     b.Navigation("Subject");
                 });
 
+            modelBuilder.Entity("UniBook.Entities.Exam", b =>
+                {
+                    b.HasOne("UniBook.Entities.Group", "Group")
+                        .WithMany("Exams")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UniBook.Entities.Subject", "Subject")
+                        .WithMany("Exams")
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+
+                    b.Navigation("Subject");
+                });
+
             modelBuilder.Entity("UniBook.Entities.Group", b =>
                 {
                     b.HasOne("UniBook.Entities.Department", "Department")
@@ -410,11 +455,15 @@ namespace UniBook.Migrations
 
             modelBuilder.Entity("UniBook.Entities.Group", b =>
                 {
+                    b.Navigation("Exams");
+
                     b.Navigation("UserGroups");
                 });
 
             modelBuilder.Entity("UniBook.Entities.Subject", b =>
                 {
+                    b.Navigation("Exams");
+
                     b.Navigation("Users");
                 });
 #pragma warning restore 612, 618

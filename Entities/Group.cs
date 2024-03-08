@@ -7,5 +7,6 @@
         public int DepartmentId { get; set; }
         public Department? Department { get; set; }
         public List<UserGroup>? UserGroups { get; set; }
+        public List<Exam>? Exams { get; set; }
     }
 }
