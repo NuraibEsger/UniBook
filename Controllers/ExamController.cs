@@ -32,13 +32,14 @@ namespace UniBook.Controllers
 
             // Fetch the exams related to the user's groups
             var examDto = await _context.Exams
+                .Include(x=>x.Subject)
                 .Include(x => x.Group)
                 .Where(x => userGroups.Contains(x.GroupId))
                 .Select(x => _mapper.Map(x, new ExamGetDto()))
                 .AsNoTracking()
                 .ToListAsync();
 
-            return Ok(examDto);
+            return Ok(examDto); 
         }
 
         //GET api/<ExamController>/5
@@ -57,14 +58,46 @@ namespace UniBook.Controllers
         }
 
         // POST api/<ExamController>
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] ExamPostDto dto)
+        [HttpPost("{id}")]
+        public async Task<IActionResult> Post(string id, [FromBody] ExamPostDto dto)
         {
             if (!ModelState.IsValid) return BadRequest();
 
+            var teacher = await _context.Users
+            .Include(u => u.Subject)
+            .FirstOrDefaultAsync(u => u.Id == id);
+
+            if (teacher is null) return NotFound("Teacher not found");
+
             var group = await _context.Groups.FirstOrDefaultAsync(x => x.Id == dto.GroupId);
 
-            if (group is null) return NotFound();
+            dto.SubjectId = teacher.SubjectId;
+
+            if (group is null) return NotFound("Group not found");
+
+            // Calculate the minimum date and time allowed for the exam (1 day later)
+            var minDateTime = DateTime.UtcNow.AddDays(1);
+
+            if (dto.DateTime < minDateTime)
+            {
+                return BadRequest("Exam date and time must be at least 1 day later.");
+            }
+
+            var existingExams = await _context.Exams
+            .Where(e => e.GroupId == dto.GroupId)
+            .ToListAsync();
+
+            foreach (var existingExam in existingExams)
+            {
+                // Calculate the time difference between the new exam and each existing exam
+                var timeDifference = dto.DateTime.Subtract(existingExam.DateTime).TotalHours;
+
+                // Ensure that the time difference is at least 3 hours
+                if (Math.Abs(timeDifference) < 3)
+                {
+                    return BadRequest("Exams cannot be scheduled less than 3 hours apart for the same group.");
+                }
+            }
 
             var exam = new Exam();
 

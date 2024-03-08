@@ -9,6 +9,6 @@ namespace UniBook.DTOs.Exam
         public int Id { get; set; }
         public DateTime DateTime { get; set; }
         public string? GroupName { get; set; }
-        public string SubjectName { get; set; }
+        public string? SubjectName { get; set; }
     }
 }
