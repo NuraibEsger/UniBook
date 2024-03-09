@@ -15,6 +15,7 @@ namespace UniBook.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Rector")]
     public class GroupController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -40,6 +41,7 @@ namespace UniBook.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> Get(int id, [FromServices] UserManager<AppUser> userManager)
         {
             var students = await userManager.GetUsersInRoleAsync("Student");

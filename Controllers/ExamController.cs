@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UniBook.Data;
@@ -11,6 +12,7 @@ namespace UniBook.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Teacher")]
     public class ExamController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -22,6 +24,8 @@ namespace UniBook.Controllers
         }
         // GET: api/<ExamController>
         [HttpGet]
+        [AllowAnonymous]
+        [Authorize(Roles = "Teacher , Student")]
         public async Task<IActionResult> Get(string id)
         {
             // Fetch the groups associated with the user
@@ -111,9 +115,57 @@ namespace UniBook.Controllers
 
         // PUT api/<ExamController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(string id, [FromBody] ExamPutDto dto)
         {
+            if (!ModelState.IsValid) return BadRequest();
 
+            var existingExam = await _context.Exams.Include(x=>x.Group).FirstOrDefaultAsync(x => x.Id == dto.ExamId);
+
+            if (existingExam is null) return BadRequest();
+
+            var teacher = await _context.Users
+            .Include(u => u.Subject)
+            .FirstOrDefaultAsync(u => u.Id == id);
+
+            if (teacher is null) return NotFound("Teacher not found");
+
+            if (existingExam.GroupId != dto.GroupId)
+            {
+                var group = await _context.Groups.FirstOrDefaultAsync(x => x.Id == dto.GroupId);
+                if (group is null) return NotFound("Group not found");
+            }
+
+            dto.SubjectId = teacher.SubjectId;
+
+            // Calculate the minimum date and time allowed for the exam (1 day later)
+            var minDateTime = DateTime.UtcNow.AddDays(1);
+
+            if (dto.DateTime < minDateTime)
+            {
+                return BadRequest("Exam date and time must be at least 1 day later.");
+            }
+
+            var existingExamsGroups = await _context.Exams
+            .Where(e => e.GroupId == dto.GroupId)
+            .ToListAsync();
+
+            foreach (var existingExamsGroup in existingExamsGroups)
+            {
+                // Calculate the time difference between the new exam and each existing exam
+                var timeDifference = dto.DateTime.Subtract(existingExamsGroup.DateTime).TotalHours;
+
+                // Ensure that the time difference is at least 3 hours
+                if (Math.Abs(timeDifference) < 3)
+                {
+                    return BadRequest("Exams cannot be scheduled less than 3 hours apart for the same group.");
+                }
+            }
+
+            _mapper.Map(dto, existingExam);
+
+            await _context.SaveChangesAsync();
+
+            return Ok(existingExam.Id);
         }
 
         // DELETE api/<ExamController>/5

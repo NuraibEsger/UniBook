@@ -103,9 +103,11 @@ namespace UniBook
 
             builder.Services.AddSwaggerGen();
 
+            var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowSpecificOrigin",
+                options.AddPolicy(MyAllowSpecificOrigins,
                     builder =>
                     {
                         builder.WithOrigins("http://localhost:5173")
@@ -139,7 +141,7 @@ namespace UniBook
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseCors("AllowSpecificOrigin");
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.MapControllers();
 

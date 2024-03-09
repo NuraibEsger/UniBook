@@ -2,9 +2,9 @@
 {
     public class ExamPostDto
     {
-        public DateTime DateTime { get; set; }
         public int? SubjectId { get; set; }
         public int GroupId { get; set; }
+        public DateTime DateTime { get; set; }
     }
 }
     

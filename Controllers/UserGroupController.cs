@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +27,7 @@ namespace UniBook.Controllers
         }
         // GET: api/<UserGroupController>
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Get()
         {
             var userGroups = await _context.UserGroups
@@ -39,6 +41,8 @@ namespace UniBook.Controllers
 
         // GET api/<UserGroupController>/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
+        [Authorize(Roles = "Student,Teacher,Rector")]
         public async Task<IActionResult> Get(string id)
         {
             var userGroup = await _context.UserGroups
@@ -55,6 +59,7 @@ namespace UniBook.Controllers
 
         // POST api/<UserGroupController>
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Post([FromBody] UserGroupPostDto dto)
         {
             if (!ModelState.IsValid) return BadRequest("User not found.");

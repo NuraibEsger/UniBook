@@ -14,6 +14,7 @@ namespace UniBook.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Rector")]
     public class StudentController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;

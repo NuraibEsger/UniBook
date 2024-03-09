@@ -9,6 +9,7 @@ namespace UniBook.DTOs.Group
         public int Id { get; set; }
         public string? Name { get; set; }
         public string? DepartmentName { get; set; }
+        public int DepartmentId { get; set; }
         public List<UserGroupGetDto>? UserGroups { get; set; }
     }
 }
